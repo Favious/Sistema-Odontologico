@@ -1,11 +1,3 @@
-main:-
-diagnostico(Resultado),
-write('El diagnostico para el paciente es: '),
-write(Resultado),
-nl,
-write('LAVESE LOS DIENTES'),
-undo.
-
 diagnostico(fractura_horizontal_con_pulpa_implicada) :- fractura_horizontal_con_pulpa_implicada, !.
 diagnostico(fractura_horizontal_sin_pulpa_implicada) :- fractura_horizontal_sin_pulpa_implicada, !.
 diagnostico(fractura_oblicua_con_pulpa_implicada) :- fractura_oblicua_con_pulpa_implicada, !.
@@ -90,6 +82,14 @@ assert(no(Pregunta)), fail).
 :- dynamic si/1,no/1.
 verificar(Sintoma) :-
 (si(Sintoma) -> true ; (no(Sintoma) -> fail ; consultar(Sintoma))).
+
+main:-
+diagnostico(Resultado),
+write('El diagnostico para el paciente es: '),
+write(Resultado),
+nl,
+write('LAVESE LOS DIENTES'),
+undo.
 
 undo :- retract(si(_)),fail.
 undo :- retract(no(_)),fail.
