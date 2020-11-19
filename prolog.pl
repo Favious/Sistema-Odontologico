@@ -1,4 +1,3 @@
-/*Source code of expert system*/
 main:-
 diagnostico(Resultado),
 write('El diagnostico para el paciente es: '),
@@ -7,7 +6,6 @@ nl,
 write('LAVESE LOS DIENTES'),
 undo.
 
-/*Hypothesis that should be tested*/
 diagnostico(fractura_horizontal_con_pulpa_implicada) :- fractura_horizontal_con_pulpa_implicada, !.
 diagnostico(fractura_horizontal_sin_pulpa_implicada) :- fractura_horizontal_sin_pulpa_implicada, !.
 diagnostico(fractura_oblicua_con_pulpa_implicada) :- fractura_oblicua_con_pulpa_implicada, !.
@@ -18,44 +16,27 @@ diagnostico(pulpa_daniada_y_viva_de_manera_reversible) :- pulpa_daniada_y_viva_d
 diagnostico(periodontitis) :- periodontitis, !.
 diagnostico(diagnostico_desconocido).
 
-/*Hypothesis Identification Rules*/
 fractura_horizontal_con_pulpa_implicada :-
 verificar(diente_fisurado),
 verificar(diente_fracturado_horizontalmente),
-verificar(pulpa_expuesta),
-write('Sugerencias para diagnostico:'),
-nl,
-write('Duerma 8 horas'),
-nl.
+verificar(pulpa_expuesta).
 
 fractura_horizontal_sin_pulpa_implicada :-
 verificar(diente_fisurado),
 verificar(diente_fracturado_horizontalmente),
-not(verificar(pulpa_expuesta)),
-write('Sugerencias para diagnostico:'),
-nl,
-write('Duerma 8 horas'),
-nl.
+not(verificar(pulpa_expuesta)).
 
 fractura_oblicua_con_pulpa_implicada :-
 verificar(diente_fisurado),
 not(verificar(diente_fracturado_horizontalmente)),
 verificar(pulpa_fracturada_oblicuamente),
-verificar(pulpa_expuesta),
-write('Sugerencias para diagnostico:'),
-nl,
-write('Duerma 8 horas'),
-nl.
+verificar(pulpa_expuesta).
 
 fractura_oblicua_sin_pulpa_implicada :-
 verificar(diente_fisurado),
 not(verificar(diente_fracturado_horizontalmente)),
 verificar(pulpa_fracturada_oblicuamente),
-not(verificar(pulpa_expuesta)),
-write('Sugerencias para diagnostico:'),
-nl,
-write('Duerma 8 horas'),
-nl.
+not(verificar(pulpa_expuesta)).
 
 la_pulpa_esta_muerta :-
 not(verificar(diente_fisurado)),
@@ -66,11 +47,7 @@ nl,
 verificar(dolor_a_la_percusion_vertical),
 verificar(dolor_a_la_percusion_horizontal),
 verificar(dolor_a_la_palpacion_apical),
-not(verificar(dolor_al_poner_aire_frio_al_diente)),
-write('Sugerencias para diagnostico:'),
-nl,
-write('Duerma 8 horas'),
-nl.
+not(verificar(dolor_al_poner_aire_frio_al_diente)).
 
 pulpa_daniada_y_viva_de_manera_irreversible :-
 not(verificar(diente_fisurado)),
@@ -79,11 +56,7 @@ verificar(dolor_agudo_por_7_dias),
 not(verificar(dolor_a_la_percusion_vertical)),
 verificar(dolor_a_la_percusion_horizontal),
 not(verificar(dolor_a_la_palpacion_apical)),
-verificar(dolor_al_poner_aire_frio_al_diente),
-write('Sugerencias para diagnostico:'),
-nl,
-write('Duerma 8 horas'),
-nl.
+verificar(dolor_al_poner_aire_frio_al_diente).
 
 pulpa_daniada_y_viva_de_manera_reversible :-
 not(verificar(diente_fisurado)),
@@ -92,11 +65,7 @@ verificar(dolor_agudo_por_7_dias),
 not(verificar(dolor_a_la_percusion_vertical)),
 not(verificar(dolor_a_la_percusion_horizontal)),
 not(verificar(dolor_a_la_palpacion_apical)),
-verificar(dolor_al_poner_aire_frio_al_diente),
-write('Sugerencias para diagnostico:'),
-nl,
-write('Duerma 8 horas'),
-nl.
+verificar(dolor_al_poner_aire_frio_al_diente).
 
 periodontitis :-
 not(verificar(diente_fisurado)),
@@ -105,36 +74,23 @@ not(verificar(encia_irritada)),
 not(verificar(dolor_a_la_palpacion_apical)),
 verificar(el_diente_se_mueve),
 not(verificar(dolor_al_poner_aire_frio_al_diente)),
-verificar(se_observa_perdida_de_masa_en_el_diente),
-write('Sugerencias para diagnostico:'),
-nl,
-write('Duerma 8 horas'),
-nl.
+verificar(se_observa_perdida_de_masa_en_el_diente).
 
-
-/* how to ask questions */
-ask(Question) :-
-write('El odontologo ve el siguiente sintoma: '),
-write(Question),
+consultar(Pregunta) :-
+write('Responda la siguiente pregunta: '),
+write(Pregunta),
 write('? '),
-read(Response),
+read(Respuesta),
 nl,
-( (Response == si ; Response == s)
+(Respuesta == si
 ->
-assert(si(Question)) ;
-assert(no(Question)), fail).
+assert(si(Pregunta)) ;
+assert(no(Pregunta)), fail).
 
 :- dynamic si/1,no/1.
-/*How to verify something */
-verificar(S) :-
-(si(S)
-->
-true ;
-(no(S)
-->
-fail ;
-ask(S))).
-/* undo all yes/no assertions*/
+verificar(Sintoma) :-
+(si(Sintoma) -> true ; (no(Sintoma) -> fail ; consultar(Sintoma))).
+
 undo :- retract(si(_)),fail.
 undo :- retract(no(_)),fail.
 undo.
